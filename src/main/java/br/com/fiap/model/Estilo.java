@@ -1,9 +1,18 @@
 package br.com.fiap.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "TB_ESTILO")
 public class Estilo {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_ESTILO")
+    @SequenceGenerator(name = "SQ_ESTILO", sequenceName = "SQ_ESTILO")
+    @Column(name = "ID_ESTILO")
     private long id;
 
+    @Column(name = "NM_ESTILO")
     private String nome;
 
     public Estilo() {

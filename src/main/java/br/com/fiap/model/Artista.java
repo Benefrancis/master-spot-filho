@@ -1,15 +1,36 @@
 package br.com.fiap.model;
 
+import jakarta.persistence.*;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+@Entity
+@Table(name = "TB_ARTISTA")
 public class Artista {
 
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_ARTISTA")
+    @SequenceGenerator(name = "SQ_ARTISTA", sequenceName = "SQ_ARTISTA")
+    @Column(name = "ID_ARTISTA")
     private long id;
 
+    @Column(name = "NM_ARTISTA")
     private String nome;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "TB_MUSICA_ARTISTA",
+            joinColumns = @JoinColumn(name = "ID_ARTISTA",
+                    foreignKey = @ForeignKey(name = "FK_MA_ARTISTA",
+                            value = ConstraintMode.CONSTRAINT)
+            ),
+            inverseJoinColumns = @JoinColumn(name = "ID_MUSICA",
+                foreignKey = @ForeignKey(name = "FK_MA_MUSICA",
+                        value = ConstraintMode.CONSTRAINT)
+            )
+    )
     private Set<Musica> musicas = new HashSet<>();
 
     public Artista() {
