@@ -1,5 +1,9 @@
 package br.com.fiap.model;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
+
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -80,10 +84,17 @@ public class Artista {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Artista{");
-        sb.append("id=").append(id);
-        sb.append(", nome='").append(nome).append('\'');
-        sb.append('}');
-        return sb.toString();
+        ObjectMapper mapper = new ObjectMapper();
+        //By default all fields without explicit view definition are included, disable this
+        mapper.configure(SerializationConfig.Feature.DEFAULT_VIEW_INCLUSION, false);
+        //display name only
+        String jsonInString = null;
+        try {
+            jsonInString = mapper.writeValueAsString(this);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return jsonInString;
     }
 }
