@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -31,7 +32,7 @@ public class Artista {
                         value = ConstraintMode.CONSTRAINT)
             )
     )
-    private Set<Musica> musicas = new HashSet<>();
+    private Set<Musica> musicas = new LinkedHashSet<>();
 
     public Artista() {
     }

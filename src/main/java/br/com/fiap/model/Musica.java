@@ -3,6 +3,7 @@ package br.com.fiap.model;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -26,7 +27,7 @@ public class Musica {
 
     @ManyToMany(mappedBy = "musicas")
     @OrderBy("nome DESC")
-    private Set<Artista> artistas = new HashSet<>();
+    private Set<Artista> artistas = new LinkedHashSet<>();
 
 
     public Musica() {
