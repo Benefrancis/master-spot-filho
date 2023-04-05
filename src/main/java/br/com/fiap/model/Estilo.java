@@ -2,6 +2,9 @@ package br.com.fiap.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "TB_ESTILO")
 public class Estilo {
@@ -15,12 +18,25 @@ public class Estilo {
     @Column(name = "NM_ESTILO")
     private String nome;
 
+    @ManyToMany(mappedBy = "estilos")
+    @OrderBy("nome DESC")
+    private Set<Musica> musicas = new HashSet<>();
+
+    public Set<Musica> getMusicas() {
+        return musicas;
+    }
+
+    public void setMusicas(Set<Musica> musicas) {
+        this.musicas = musicas;
+    }
+
     public Estilo() {
     }
 
-    public Estilo(long id, String nome) {
+    public Estilo(long id, String nome, Set<Musica> musicas) {
         this.id = id;
         this.nome = nome;
+        this.musicas = musicas;
     }
 
     public long getId() {

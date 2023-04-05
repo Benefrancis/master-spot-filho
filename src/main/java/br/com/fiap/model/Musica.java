@@ -3,6 +3,7 @@ package br.com.fiap.model;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -19,11 +20,40 @@ public class Musica {
     @Column(name = "NM_MUSICA")
     private String nome;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
-    @JoinColumn(name = "ID_ESTILO", referencedColumnName = "ID_ESTILO",
-            foreignKey = @ForeignKey(name = "FK_ESTILO_MUSICA", value = ConstraintMode.CONSTRAINT)
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "TB_MUSICA_ESTILO",
+            joinColumns = @JoinColumn(name = "ID_MUSICA",
+                    foreignKey = @ForeignKey(name = "FK_ME_MUSICA")
+            ),
+            inverseJoinColumns = @JoinColumn(name = "ID_ESTILO",
+                    foreignKey = @ForeignKey(name = "FK_ME_ESTILO")
+            )
     )
-    private Estilo estilo;
+    private Set<Estilo> estilos = new HashSet<>();
+
+
+    public Musica addEstilo(Estilo e) {
+        this.estilos.add(e);
+        e.getMusicas().add(this);
+        return this;
+    }
+
+    public Musica removeEstilo(Estilo e) {
+        this.estilos.remove(e);
+        e.getMusicas().remove(this);
+        return this;
+    }
+
+    public Musica removeTodosEstilos(){
+        Iterator<Estilo> iterator = this.estilos.iterator();
+        while (iterator.hasNext()) {
+            Estilo e = iterator.next();
+            this.estilos.remove(this);
+            iterator.remove();
+        }
+        return this;
+    }
 
     @ManyToMany(mappedBy = "musicas")
     @OrderBy("nome DESC")
@@ -33,12 +63,6 @@ public class Musica {
     public Musica() {
     }
 
-    public Musica(long id, String nome, Estilo estilo, Set<Artista> artistas) {
-        this.id = id;
-        this.nome = nome;
-        this.estilo = estilo;
-        this.artistas = artistas;
-    }
 
     public long getId() {
         return id;
@@ -58,14 +82,6 @@ public class Musica {
         return this;
     }
 
-    public Estilo getEstilo() {
-        return estilo;
-    }
-
-    public Musica setEstilo(Estilo estilo) {
-        this.estilo = estilo;
-        return this;
-    }
 
     public Set<Artista> getArtistas() {
         return artistas;
@@ -78,12 +94,11 @@ public class Musica {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Musica{");
-        sb.append("id=").append(id);
-        sb.append(", nome='").append(nome).append('\'');
-        sb.append(", estilo=").append(estilo);
-        sb.append(", artistas=").append(artistas);
-        sb.append('}');
-        return sb.toString();
+        return "Musica{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", estilos=" + estilos +
+                ", artistas=" + artistas +
+                '}';
     }
 }

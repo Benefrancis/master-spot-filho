@@ -12,14 +12,13 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("maria-db");
+        EntityManagerFactory factory = Persistence.createEntityManagerFactory("fiap");
         EntityManager manager = factory.createEntityManager();
 
-        // salvar(manager);
+         salvar(manager);
         // long id = 1L;
         // findByID(manager, id);
-
-        findAll(manager);
+         findAll(manager);
     }
 
     private static void findAll(EntityManager manager) {
@@ -34,10 +33,20 @@ public class Main {
     }
 
     private static void salvar(EntityManager manager) {
-        var estilo = new Estilo(0, "Rock Nacional");
+        var rock = new Estilo();
+        rock.setNome("Rock");
+
+        var rockNacional = new Estilo();
+        rockNacional.setNome("Rock Nacional");
+
+        var mpb = new Estilo();
+        mpb.setNome("MPB");
 
         var musica = new Musica();
-        musica.setNome("Zoio de Lula").setEstilo(estilo);
+        musica.setNome("Zoio de Lula")
+                .addEstilo(rock)
+                .addEstilo(rockNacional)
+                .addEstilo(mpb);
 
         var vocal = new Artista();
         vocal.setNome("Chorão").addMusica(musica);
@@ -60,7 +69,7 @@ public class Main {
                 manager::persist
         );
 
-        manager.persist(estilo);
+
         manager.persist(musica);
         manager.getTransaction().commit();
     }
